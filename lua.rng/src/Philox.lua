@@ -127,11 +127,8 @@ function Philox:Step(count)
 	end
 
 	if _debug then
+		assert(count ~= 0)
 		assert(count == count & 0xffffffff)
-	end
-
-	if count == 0 then
-		return
 	end
 
 	self._index = 0

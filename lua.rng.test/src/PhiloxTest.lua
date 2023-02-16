@@ -189,8 +189,6 @@ local function TestStep_WithNumber(a, count, x)
 end
 
 function PhiloxTest:TestStep_WithNumber()
-	TestStep_WithNumber({0x00000000, 0x00000000, 0x00000000, 0x00000000}, 0x00000000,
-		{0x00000000, 0x00000000, 0x00000000, 0x00000000})
 	TestStep_WithNumber({0x00000001, 0x00000000, 0x00000000, 0x00000000}, 0xffffffff,
 		{0x00000000, 0x00000001, 0x00000000, 0x00000000})
 	TestStep_WithNumber({0x00000001, 0xffffffff, 0x00000000, 0x00000000}, 0xffffffff,
@@ -203,7 +201,7 @@ function PhiloxTest:TestStep_WithNumber()
 		{0xfffffffe, 0x00000001, 0x00000000, 0x00000000})
 end
 
-local function TestStep_WithNumber_WhereFormatNotValid(count)
+local function TestStep_WithNumber_WhereNotValid(count)
 	local o = Philox.New({0xa4093822, 0x299f31d0})
 
 	LuaUnit.assertError(function ()
@@ -211,10 +209,11 @@ local function TestStep_WithNumber_WhereFormatNotValid(count)
 	end)
 end
 
-function PhiloxTest:TestStep_WithNumber_WhereFormatNotValid()
-	TestStep_WithNumber_WhereFormatNotValid(-1)
-	TestStep_WithNumber_WhereFormatNotValid(0xffffffff + 1)
-	TestStep_WithNumber_WhereFormatNotValid(0.1)
+function PhiloxTest:TestStep_WithNumber_WhereNotValid()
+	TestStep_WithNumber_WhereNotValid(0)
+	TestStep_WithNumber_WhereNotValid(-1)
+	TestStep_WithNumber_WhereNotValid(0xffffffff + 1)
+	TestStep_WithNumber_WhereNotValid(0.1)
 end
 
 local function TestJump(a, x)

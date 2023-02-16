@@ -84,6 +84,10 @@ function Philox.Philox_4x32_10(counter, key)
 end
 
 function Philox.New(key, counter)
+	if type(key) == "number" then
+		key = {key & 0xffffffff, key >> 32}
+	end
+
 	if counter == nil then
 		counter = {0x00000000, 0x00000000, 0x00000000, 0x00000000}
 	end

@@ -148,6 +148,17 @@ function PhiloxTest.TestNew_WithTableAndTable_WhereFormatNotValid()
 	TestNew_WithTable_WhereFormatNotValid({0x00000000, 0x00000000, 0x00000000, 0.1})
 end
 
+local function TestNew_WithNumber(a, x)
+	local o = Philox.New(a)
+
+	LuaUnit.assertEquals(o:GetKey(), x)
+end
+
+function PhiloxTest.TestNew_Withumber()
+	TestNew_WithNumber(0x0000000000000000, {0x00000000, 0x00000000})
+	TestNew_WithNumber(0x299f31d0a4093822, {0xa4093822, 0x299f31d0})
+end
+
 local function TestNext(a)
 	local o = Philox.New(a)
 	local p = Philox.New(a)

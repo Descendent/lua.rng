@@ -13,6 +13,12 @@ local SIGNIFICAND = (1 << 53) - 1
 
 local SIGNIFICAND_HI = (1 << (53 - 32)) - 1
 
+local _debug = true
+
+function Philox.ConfigureDebug(value)
+	_debug = value
+end
+
 local function MulHiLo32(a, b)
 	-- Long multiplication
 
@@ -48,15 +54,17 @@ local function Philox_4x32_10_Round(counter, key)
 end
 
 function Philox.Philox_4x32_10(counter, key)
-	assert(#counter == 4)
-	assert(counter[1] == counter[1] & 0xffffffff)
-	assert(counter[2] == counter[2] & 0xffffffff)
-	assert(counter[3] == counter[3] & 0xffffffff)
-	assert(counter[4] == counter[4] & 0xffffffff)
+	if _debug then
+		assert(#counter == 4)
+		assert(counter[1] == counter[1] & 0xffffffff)
+		assert(counter[2] == counter[2] & 0xffffffff)
+		assert(counter[3] == counter[3] & 0xffffffff)
+		assert(counter[4] == counter[4] & 0xffffffff)
 
-	assert(#key == 2)
-	assert(key[1] == key[1] & 0xffffffff)
-	assert(key[2] == key[2] & 0xffffffff)
+		assert(#key == 2)
+		assert(key[1] == key[1] & 0xffffffff)
+		assert(key[2] == key[2] & 0xffffffff)
+	end
 
 	counter = {table.unpack(counter)}
 	key = {table.unpack(key)}
@@ -80,15 +88,17 @@ function Philox.New(key, counter)
 		counter = {0x00000000, 0x00000000, 0x00000000, 0x00000000}
 	end
 
-	assert(#key == 2)
-	assert(key[1] == key[1] & 0xffffffff)
-	assert(key[2] == key[2] & 0xffffffff)
+	if _debug then
+		assert(#key == 2)
+		assert(key[1] == key[1] & 0xffffffff)
+		assert(key[2] == key[2] & 0xffffffff)
 
-	assert(#counter == 4)
-	assert(counter[1] == counter[1] & 0xffffffff)
-	assert(counter[2] == counter[2] & 0xffffffff)
-	assert(counter[3] == counter[3] & 0xffffffff)
-	assert(counter[4] == counter[4] & 0xffffffff)
+		assert(#counter == 4)
+		assert(counter[1] == counter[1] & 0xffffffff)
+		assert(counter[2] == counter[2] & 0xffffffff)
+		assert(counter[3] == counter[3] & 0xffffffff)
+		assert(counter[4] == counter[4] & 0xffffffff)
+	end
 
 	local self = setmetatable({}, Philox)
 
@@ -113,7 +123,9 @@ function Philox:Step(count)
 		count = 1
 	end
 
-	assert(count == count & 0xffffffff)
+	if _debug then
+		assert(count == count & 0xffffffff)
+	end
 
 	if count == 0 then
 		return

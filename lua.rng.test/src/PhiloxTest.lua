@@ -160,21 +160,72 @@ function PhiloxTest.TestNew_Withumber()
 end
 
 local function TestNext(a)
+	-- Kolmogorov–Smirnov test
+	-- https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test
+	-- https://www.geeksforgeeks.org/kolmogorov-smirnov-test-ks-test/
+	-- https://www.codeproject.com/Articles/25172/Simple-Random-Number-Generation
+
 	local o = Philox.New(a)
 	local p = Philox.New(a)
 
-	local r
-	for i = 0, 1024 do
-		r = o:Next()
+	local N = 1000
+	local PROBABILITY_FAILURE = 0.001
 
-		LuaUnit.assertTrue((r >= 0.0) and (r < 1.0))
-		LuaUnit.assertTrue(r == p:Next())
+	local x = {}
+	local xi
+
+	for i = 1, N do
+		xi = o:Next()
+
+		LuaUnit.assertTrue(xi >= 0.0)
+		LuaUnit.assertTrue(xi < 1.0)
+		LuaUnit.assertTrue(xi == p:Next())
+
+		x[i] = xi
 	end
+
+	table.sort(x)
+
+	local dp_max = -math.huge
+	local dn_max = -math.huge
+
+	local dp
+	local dn
+	for i = 1, N do
+		xi = x[i]
+
+		dp = ((i - 0) / N) - xi
+		if dp > dp_max then
+			dp_max = dp
+		end
+
+		dn = xi - ((i - 1) / N)
+		if dn > dn_max then
+			dn_max = dn
+		end
+	end
+
+	local sqrt_N = math.sqrt(N)
+
+	local kp_max = dp_max * sqrt_N
+	local kn_max = dn_max * sqrt_N
+
+	local alpha_lower = 0.25 * PROBABILITY_FAILURE;
+	local alpha_upper = 1.0 - (0.25 * PROBABILITY_FAILURE);
+
+	local value_lower = math.sqrt(0.5 * math.log(1.0 / (1.0 - alpha_lower))) - (1.0 / (6.0 * sqrt_N));
+	local value_upper = math.sqrt(0.5 * math.log(1.0 / (1.0 - alpha_upper))) - (1.0 / (6.0 * sqrt_N));
+
+	LuaUnit.assertTrue(kp_max >= value_lower)
+	LuaUnit.assertTrue(kp_max <= value_upper)
+	LuaUnit.assertTrue(kn_max >= value_lower)
+	LuaUnit.assertTrue(kn_max <= value_upper)
 end
 
 function PhiloxTest.TestNext()
 	TestNext({0x00000000, 0x00000000})
 	TestNext({0xa4093822, 0x299f31d0})
+	TestNext(os.time())
 end
 
 local function TestStep(a, x)

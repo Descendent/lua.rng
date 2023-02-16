@@ -11,7 +11,7 @@ local function TestPhilox_4x32_10(counter, key, x)
 end
 
 function PhiloxTest.TestPhilox_4x32_10()
-	-- https://www.deshawresearch.com/resources_random123.html
+	-- https://github.com/DEShawResearch/random123/blob/main/tests/kat_vectors
 	-- https://www.thesalmons.org/john/random123/
 	-- "Known Answer Test" vectors
 	TestPhilox_4x32_10({0x00000000, 0x00000000, 0x00000000, 0x00000000}, {0x00000000, 0x00000000},

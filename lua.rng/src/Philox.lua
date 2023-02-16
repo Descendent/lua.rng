@@ -108,6 +108,7 @@ function Philox.New(key, counter)
 	self._counter = counter
 
 	self._value = {}
+	self._index = 0
 
 	return self
 end
@@ -133,6 +134,8 @@ function Philox:Step(count)
 		return
 	end
 
+	self._index = 0
+
 	self._counter[1] = (self._counter[1] + count) & 0xffffffff
 	if self._counter[1] >= count then
 		return
@@ -152,6 +155,8 @@ function Philox:Step(count)
 end
 
 function Philox:Jump()
+	self._index = 0
+
 	self._counter[3] = (self._counter[3] + 1) & 0xffffffff
 	if self._counter[3] ~= 0 then
 		return
@@ -161,18 +166,24 @@ function Philox:Jump()
 end
 
 local function Dequeue(self)
-	if #self._value ~= 0 then
-		return table.remove(self._value, 1)
+	if self._index == 0 then
+		local r = Philox.Philox_4x32_10(self._counter, self._key)
+
+		self._value[1] = r[1]
+		self._value[2] = r[2]
+		self._value[3] = r[3]
+		self._value[4] = r[4]
 	end
 
-	local r = Philox.Philox_4x32_10(self._counter, self._key)
-	self:Step()
+	self._index = self._index + 1
 
-	table.insert(self._value, r[2])
-	table.insert(self._value, r[3])
-	table.insert(self._value, r[4])
+	local value = self._value[self._index]
 
-	return r[1]
+	if self._index >= 4 then
+		self:Step()
+	end
+
+	return value
 end
 
 function Philox:Next()

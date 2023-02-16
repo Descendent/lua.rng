@@ -9,8 +9,6 @@ local W0 = 0x9e3779b9
 
 local W1 = 0xbb67ae85
 
-local SIGNIFICAND = (1 << 53) - 1
-
 local SIGNIFICAND_HI = (1 << (53 - 32)) - 1
 
 local _debug = true
@@ -178,11 +176,12 @@ local function Dequeue(self)
 end
 
 function Philox:Next()
+	-- https://prng.di.unimi.it/
+
 	local lo = Dequeue(self)
 	local hi = Dequeue(self) & SIGNIFICAND_HI
 
-	return ((lo + (hi << 32))
-		/ (SIGNIFICAND + 1))
+	return ((hi << 32) | lo) * 0x1p-53
 end
 
 return Philox

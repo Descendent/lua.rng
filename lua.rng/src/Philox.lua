@@ -1,3 +1,31 @@
+local function Quote(value)
+	local t = type(value)
+
+	if t == "string" then
+		return string.format("%q", value)
+	end
+
+	if t == "table" then
+		return string.format("[%s]", value)
+	end
+
+	if t == "function" then
+		return string.format("[%s]", value)
+	end
+
+	if t == "thread" then
+		return string.format("[%s]", value)
+	end
+
+	if t == "userdata" then
+		return string.format("[%s]", value)
+	end
+
+	return value
+end
+
+--------------------------------------------------------------------------------
+
 local Philox = {}
 Philox.__index = Philox
 
@@ -53,15 +81,23 @@ end
 
 function Philox.Philox_4x32_10(counter, key)
 	if _debug then
-		assert(#counter == 4)
-		assert(counter[1] == counter[1] & 0xffffffff)
-		assert(counter[2] == counter[2] & 0xffffffff)
-		assert(counter[3] == counter[3] & 0xffffffff)
-		assert(counter[4] == counter[4] & 0xffffffff)
+		assert(#counter == 4,
+			string.format("invalid argument: #counter=%s", Quote(#counter)))
+		assert(counter[1] == counter[1] & 0xffffffff,
+			string.format("invalid argument: counter[1]=%s", Quote(counter[1])))
+		assert(counter[2] == counter[2] & 0xffffffff,
+			string.format("invalid argument: counter[2]=%s", Quote(counter[2])))
+		assert(counter[3] == counter[3] & 0xffffffff,
+			string.format("invalid argument: counter[3]=%s", Quote(counter[3])))
+		assert(counter[4] == counter[4] & 0xffffffff,
+			string.format("invalid argument: counter[4]=%s", Quote(counter[4])))
 
-		assert(#key == 2)
-		assert(key[1] == key[1] & 0xffffffff)
-		assert(key[2] == key[2] & 0xffffffff)
+		assert(#key == 2,
+			string.format("invalid argument: #key=%s", Quote(#key)))
+		assert(key[1] == key[1] & 0xffffffff,
+			string.format("invalid argument: key[1]=%s", Quote(key[1])))
+		assert(key[2] == key[2] & 0xffffffff,
+			string.format("invalid argument: key[2]=%s", Quote(key[2])))
 	end
 
 	counter = {table.unpack(counter)}
@@ -91,15 +127,23 @@ function Philox.New(key, counter)
 	end
 
 	if _debug then
-		assert(#key == 2)
-		assert(key[1] == key[1] & 0xffffffff)
-		assert(key[2] == key[2] & 0xffffffff)
+		assert(#key == 2,
+			string.format("invalid argument: #key=%s", Quote(#key)))
+		assert(key[1] == key[1] & 0xffffffff,
+			string.format("invalid argument: key[1]=%s", Quote(key[1])))
+		assert(key[2] == key[2] & 0xffffffff,
+			string.format("invalid argument: key[2]=%s", Quote(key[2])))
 
-		assert(#counter == 4)
-		assert(counter[1] == counter[1] & 0xffffffff)
-		assert(counter[2] == counter[2] & 0xffffffff)
-		assert(counter[3] == counter[3] & 0xffffffff)
-		assert(counter[4] == counter[4] & 0xffffffff)
+		assert(#counter == 4,
+			string.format("invalid argument: #counter=%s", Quote(#counter)))
+		assert(counter[1] == counter[1] & 0xffffffff,
+			string.format("invalid argument: counter[1]=%s", Quote(counter[1])))
+		assert(counter[2] == counter[2] & 0xffffffff,
+			string.format("invalid argument: counter[2]=%s", Quote(counter[2])))
+		assert(counter[3] == counter[3] & 0xffffffff,
+			string.format("invalid argument: counter[3]=%s", Quote(counter[3])))
+		assert(counter[4] == counter[4] & 0xffffffff,
+			string.format("invalid argument: counter[4]=%s", Quote(counter[4])))
 	end
 
 	local self = setmetatable({}, Philox)
@@ -127,8 +171,10 @@ function Philox:Step(count)
 	end
 
 	if _debug then
-		assert(count ~= 0)
-		assert(count == count & 0xffffffff)
+		assert(count ~= 0,
+			string.format("invalid argument: count=%s", Quote(count)))
+		assert(count == count & 0xffffffff,
+			string.format("invalid argument: count=%s", Quote(count)))
 	end
 
 	self._index = 0
